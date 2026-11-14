@@ -34,49 +34,70 @@ export default function TerminalScreen({ navigation }) {
               onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
             />
             <Badge
-              label="Terminal Sandbox"
+              label="Interpreter Engine v10.0"
               variant="gitMain"
             />
           </View>
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.headerApp}>Git Quest • Developer Shell</Text>
-            <Text style={styles.title}>Interactive Git Terminal</Text>
+            <Text style={styles.headerApp}>Git Quest • Command Interpreter</Text>
+            <Text style={styles.title}>Git Terminal Sandbox</Text>
             <Text style={styles.subtitle}>
-              Test commands, observe terminal output, and practice command-line workflows in a safe simulated shell.
+              Execute real simulated Git operations. Track repository state, stage files, create commits, inspect logs, and manage remotes.
             </Text>
           </View>
 
           {/* Reusable Interactive Terminal Component */}
-          <Terminal
-            style={styles.terminal}
-            title="bash - git-quest@local: ~/workspace"
-          />
+          <Terminal style={styles.terminal} />
 
-          {/* Hint Card */}
+          {/* Supported Commands Reference Card */}
           <View style={styles.hintBox}>
-            <Text style={styles.hintTitle}>💡 Supported Demo Commands:</Text>
-            <Text style={styles.hintBody}>
-              Try running <Text style={styles.codeText}>help</Text>,{' '}
-              <Text style={styles.codeText}>git --version</Text>,{' '}
-              <Text style={styles.codeText}>pwd</Text>,{' '}
-              <Text style={styles.codeText}>ls</Text>, or{' '}
-              <Text style={styles.codeText}>clear</Text>.
-            </Text>
-            <Text style={styles.hintFooter}>
-              Full Git repository simulation and state engine will be connected in Milestone 10.
-            </Text>
+            <Text style={styles.hintTitle}>Supported Git Commands (Milestone 10):</Text>
+
+            <View style={styles.commandCategory}>
+              <Text style={styles.categoryLabel}>Repository & Staging:</Text>
+              <Text style={styles.categoryText}>
+                • <Text style={styles.codeText}>git init</Text> — Initialize repository{'\n'}
+                • <Text style={styles.codeText}>git status</Text> — Inspect branch & file status{'\n'}
+                • <Text style={styles.codeText}>git add .</Text> or <Text style={styles.codeText}>git add README.md</Text> — Stage files
+              </Text>
+            </View>
+
+            <View style={styles.commandCategory}>
+              <Text style={styles.categoryLabel}>Commits & History:</Text>
+              <Text style={styles.categoryText}>
+                • <Text style={styles.codeText}>git commit -m &quot;Your message&quot;</Text> — Record commit snapshot{'\n'}
+                • <Text style={styles.codeText}>git log</Text> or <Text style={styles.codeText}>git log --oneline</Text> — View history
+              </Text>
+            </View>
+
+            <View style={styles.commandCategory}>
+              <Text style={styles.categoryLabel}>Config & Remotes:</Text>
+              <Text style={styles.categoryText}>
+                • <Text style={styles.codeText}>git config --global user.name &quot;Name&quot;</Text>{'\n'}
+                • <Text style={styles.codeText}>git config --list</Text> — List settings{'\n'}
+                • <Text style={styles.codeText}>git remote add origin https://github.com/repo.git</Text>{'\n'}
+                • <Text style={styles.codeText}>git remote -v</Text> — List remotes
+              </Text>
+            </View>
           </View>
 
-          {/* Bottom Navigation Link */}
+          {/* Bottom Navigation Links */}
           <View style={styles.bottomNav}>
             <Button
-              title="Browse Git Learning Modules →"
-              variant="outline"
+              title="Explore Learning Modules →"
+              variant="primary"
               size="md"
               style={styles.bottomBtn}
               onPress={() => navigation.navigate(ROUTES.LESSONS)}
+            />
+            <Button
+              title="← Back to Dashboard"
+              variant="outline"
+              size="sm"
+              style={styles.bottomBtn}
+              onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
             />
           </View>
         </ScrollView>
@@ -135,6 +156,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     marginBottom: spacing.xl,
+    gap: spacing.sm,
   },
   hintTitle: {
     ...typography.h3,
@@ -142,22 +164,24 @@ const styles = StyleSheet.create({
     color: colors.primaryLight,
     marginBottom: 2,
   },
-  hintBody: {
+  commandCategory: {
+    marginVertical: 2,
+  },
+  categoryLabel: {
+    ...typography.caption,
+    color: colors.accent,
+    marginBottom: 2,
+  },
+  categoryText: {
     ...typography.body,
     fontSize: typography.sizes.xs + 1,
     color: colors.textSecondary,
-    lineHeight: 18,
+    lineHeight: 20,
   },
   codeText: {
     ...typography.code,
-    color: colors.accentLight,
+    color: colors.primaryLight,
     fontWeight: typography.weights.bold,
-  },
-  hintFooter: {
-    ...typography.caption,
-    fontSize: typography.sizes.xs - 1,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
   },
   bottomNav: {
     gap: spacing.sm,

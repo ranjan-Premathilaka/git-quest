@@ -9,139 +9,117 @@ import {
   Keyboard,
 } from 'react-native';
 import { colors, spacing, borderRadius, typography } from '../../constants/theme';
+import { executeGitCommand, getGitState } from '../../services';
 import Button from '../common/Button';
 
 /**
  * Reusable Interactive Terminal Component.
- * Simulates a Unix/Git developer terminal with command execution,
- * history tracking, color-coded output, and auto-scrolling.
+ * Powered by the local Git Command Interpreter (Milestone 10):
+ * - Supports git init, status, add, commit, log, config, remote, and shell utilities.
+ * - Live simulated repository state tracking.
+ * - Mobile quick-command tap pills.
  */
-export default function Terminal({ style, title = 'bash - git-quest@local: ~/workspace' }) {
+export default function Terminal({ style, title }) {
   const initialHistory = [
     {
       id: 'init-1',
       type: 'info',
-      text: 'Git Quest Interactive Terminal Simulation [v1.0.0]\nType \'help\' to display available commands.',
+      text: 'Git Quest Command Interpreter [Engine v10.0]\nType \'help\' to list available Git & shell commands.',
     },
     {
       id: 'init-2',
       type: 'output',
-      text: 'Workspace initialized at /home/developer/workspace/git-quest (branch: main)',
+      text: 'Session connected to /home/developer/workspace/git-quest\nRun \'git init\' to initialize your repository.',
     },
   ];
 
   const [history, setHistory] = useState(initialHistory);
   const [inputValue, setInputValue] = useState('');
+  const [repoState, setRepoState] = useState(getGitState());
   const scrollRef = useRef(null);
 
-  const quickCommands = ['help', 'git --version', 'pwd', 'ls', 'clear'];
+  const quickCommands = [
+    'git init',
+    'git status',
+    'git add .',
+    'git commit -m "Initial commit"',
+    'git log',
+    'git remote -v',
+    'help',
+    'clear',
+  ];
 
-  const executeCommand = (cmdText) => {
-    const rawCmd = (cmdText || inputValue).trim();
+  const runCommand = (cmdText) => {
+    const rawCmd = (cmdText !== undefined ? cmdText : inputValue).trim();
     if (!rawCmd) return;
 
-    // Append the user's entered command to history
+    // Append user's command line to output
     const commandEntry = {
       id: `cmd-${Date.now()}-${Math.random()}`,
       type: 'command',
       text: rawCmd,
     };
 
-    const lowerCmd = rawCmd.toLowerCase();
+    // Execute through the dedicated interpreter service
+    const result = executeGitCommand(rawCmd);
 
-    if (lowerCmd === 'clear') {
+    if (result.type === 'clear') {
       setHistory([]);
       setInputValue('');
+      setRepoState(getGitState());
       return;
     }
 
-    let resultEntry;
+    const outputEntry = {
+      id: `res-${Date.now()}-${Math.random()}`,
+      type: result.type,
+      text: result.output,
+    };
 
-    switch (lowerCmd) {
-      case 'help':
-        resultEntry = {
-          id: `res-${Date.now()}`,
-          type: 'info',
-          text: [
-            'Available demo commands (Milestone 09):',
-            '  help          - List all supported commands and simulator info',
-            '  clear         - Clear terminal history',
-            '  git --version - Display simulated Git CLI engine version',
-            '  pwd           - Print current working directory',
-            '  ls            - List files and directories in current workspace',
-            '',
-            '💡 Full Git command interpretation & repository engine will be',
-            '   expanded in Milestone 10 (git init, add, commit, status, etc.)',
-          ].join('\n'),
-        };
-        break;
-
-      case 'git --version':
-        resultEntry = {
-          id: `res-${Date.now()}`,
-          type: 'success',
-          text: 'git version 2.44.0.simulation.1',
-        };
-        break;
-
-      case 'pwd':
-        resultEntry = {
-          id: `res-${Date.now()}`,
-          type: 'output',
-          text: '/home/developer/workspace/git-quest',
-        };
-        break;
-
-      case 'ls':
-        resultEntry = {
-          id: `res-${Date.now()}`,
-          type: 'output',
-          text: 'assets/   src/   node_modules/   App.js   app.json   package.json   README.md',
-        };
-        break;
-
-      default:
-        resultEntry = {
-          id: `res-${Date.now()}`,
-          type: 'warning',
-          text: [
-            `git-quest: command received: '${rawCmd}'`,
-            '💡 Milestone 09 supports predefined demo commands: help, clear, git --version, pwd, ls.',
-            '   Full Git command interpretation and repository simulation will be expanded in Milestone 10!',
-          ].join('\n'),
-        };
-        break;
+    // Only add output entry if output is non-empty (some git commands like `git add` are intentionally silent on success)
+    if (result.output && result.output.length > 0) {
+      setHistory((prev) => [...prev, commandEntry, outputEntry]);
+    } else {
+      setHistory((prev) => [...prev, commandEntry]);
     }
 
-    setHistory((prev) => [...prev, commandEntry, resultEntry]);
     setInputValue('');
+    setRepoState(getGitState());
   };
 
   const handleClear = () => {
     setHistory([]);
   };
 
+  const displayTitle =
+    title ||
+    `bash - git-quest@local: ~/workspace ${
+      repoState.isInitialized ? `(${repoState.currentBranch})` : ''
+    }`;
+
   return (
     <View style={[styles.container, style]}>
       {/* ========================================================
-          1. TERMINAL WINDOW HEADER
+          1. TERMINAL HEADER
           ======================================================== */}
       <View style={styles.header}>
-        {/* macOS / Linux window dots */}
+        {/* Window controls */}
         <View style={styles.dotsGroup}>
           <View style={[styles.dot, { backgroundColor: colors.error }]} />
           <View style={[styles.dot, { backgroundColor: colors.warning }]} />
           <View style={[styles.dot, { backgroundColor: colors.success }]} />
         </View>
 
-        {/* Title & Status */}
+        {/* Dynamic Title & Status */}
         <View style={styles.titleGroup}>
           <Text style={styles.titleText} numberOfLines={1}>
-            {title}
+            {displayTitle}
           </Text>
           <View style={styles.statusIndicator}>
             <View style={styles.statusLight} />
-            <Text style={styles.statusText}>ready</Text>
+            <Text style={styles.statusText}>
+              {repoState.isInitialized ? 'git ready' : 'ready'}
+            </Text>
           </View>
         </View>
 
@@ -156,7 +134,7 @@ export default function Terminal({ style, title = 'bash - git-quest@local: ~/wor
       </View>
 
       {/* ========================================================
-          2. TERMINAL OUTPUT AREA (SCROLLABLE & AUTO-PINNED)
+          2. SCROLLABLE TERMINAL OUTPUT
           ======================================================== */}
       <ScrollView
         ref={scrollRef}
@@ -167,7 +145,7 @@ export default function Terminal({ style, title = 'bash - git-quest@local: ~/wor
       >
         {history.length === 0 ? (
           <Text style={styles.emptyNotice}>
-            Terminal cleared. Type &apos;help&apos; to view commands.
+            Terminal cleared. Type &apos;help&apos; or &apos;git status&apos; to continue.
           </Text>
         ) : (
           history.map((entry) => {
@@ -222,7 +200,7 @@ export default function Terminal({ style, title = 'bash - git-quest@local: ~/wor
               key={cmd}
               activeOpacity={0.7}
               style={styles.pill}
-              onPress={() => executeCommand(cmd)}
+              onPress={() => runCommand(cmd)}
             >
               <Text style={styles.pillText}>{cmd}</Text>
             </TouchableOpacity>
@@ -237,11 +215,11 @@ export default function Terminal({ style, title = 'bash - git-quest@local: ~/wor
         <Text style={styles.inputPrompt}>$ </Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Type a command (try 'help', 'git --version')..."
+          placeholder="Try 'git init', 'git status', 'git add .', 'help'..."
           placeholderTextColor={colors.textMuted}
           value={inputValue}
           onChangeText={setInputValue}
-          onSubmitEditing={() => executeCommand()}
+          onSubmitEditing={() => runCommand()}
           returnKeyType="go"
           autoCapitalize="none"
           autoCorrect={false}
@@ -252,7 +230,7 @@ export default function Terminal({ style, title = 'bash - git-quest@local: ~/wor
           size="sm"
           style={styles.runBtn}
           onPress={() => {
-            executeCommand();
+            runCommand();
             Keyboard.dismiss();
           }}
         />
@@ -282,7 +260,7 @@ const styles = StyleSheet.create({
   dotsGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 50,
+    width: 48,
   },
   dot: {
     width: 9,
