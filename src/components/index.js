@@ -1,1 +1,1 @@
-export { Card, Badge } from './common';
+export { Card, Badge, Button } from './common';

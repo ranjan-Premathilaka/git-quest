@@ -2,7 +2,12 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ROUTES } from '../constants/routes';
 import { colors } from '../constants/theme';
-import { WelcomeScreen } from '../screens';
+import {
+  WelcomeScreen,
+  DashboardScreen,
+  LessonsScreen,
+  ProfileScreen,
+} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +28,18 @@ export default function AppNavigator() {
       <Stack.Screen
         name={ROUTES.WELCOME}
         component={WelcomeScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.DASHBOARD}
+        component={DashboardScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.LESSONS}
+        component={LessonsScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.PROFILE}
+        component={ProfileScreen}
       />
     </Stack.Navigator>
   );

@@ -1,7 +1,12 @@
 /**
- * Application route identifiers.
- * Centralizing route strings prevents typo bugs and eases refactoring.
+ * Git Quest - Centralized Route Identifiers
+ * 
+ * Centralizing route strings prevents typo bugs and ensures consistent
+ * navigation across all screens and components.
  */
 export const ROUTES = {
   WELCOME: 'Welcome',
+  DASHBOARD: 'Dashboard',
+  LESSONS: 'Lessons',
+  PROFILE: 'Profile',
 };

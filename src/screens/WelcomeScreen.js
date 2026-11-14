@@ -8,9 +8,10 @@ import {
   StatusBar as NativeStatusBar,
 } from 'react-native';
 import { colors, spacing, borderRadius } from '../constants/theme';
-import { Card, Badge } from '../components';
+import { ROUTES } from '../constants/routes';
+import { Card, Badge, Button } from '../components';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -41,10 +42,20 @@ export default function WelcomeScreen() {
           </Text>
 
           <View style={styles.statusBox}>
-            <Text style={styles.statusLabel}>Milestone 1</Text>
-            <Text style={styles.statusValue}>Core Setup Ready</Text>
+            <Text style={styles.statusLabel}>Milestone 3</Text>
+            <Text style={styles.statusValue}>Navigation Active</Text>
           </View>
         </Card>
+
+        {/* Navigation Action CTA */}
+        <View style={styles.ctaSection}>
+          <Button
+            title="Start Quest / Enter Dashboard →"
+            variant="primary"
+            size="lg"
+            onPress={() => navigation?.navigate(ROUTES.DASHBOARD)}
+          />
+        </View>
 
         {/* Footer */}
         <View style={styles.footer}>
@@ -136,6 +147,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textMuted,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+  },
+  ctaSection: {
+    marginTop: spacing.md,
+    marginBottom: spacing.sm,
   },
   footer: {
     marginTop: spacing.xl,
