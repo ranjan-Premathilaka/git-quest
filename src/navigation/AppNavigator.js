@@ -9,6 +9,7 @@ import {
   LessonsScreen,
   LessonDetailsScreen,
   TerminalScreen,
+  BranchVisualizerScreen,
   ProfileScreen,
 } from '../screens';
 
@@ -51,6 +52,10 @@ export default function AppNavigator() {
       <Stack.Screen
         name={ROUTES.TERMINAL}
         component={TerminalScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.BRANCH_VISUALIZER}
+        component={BranchVisualizerScreen}
       />
       <Stack.Screen
         name={ROUTES.PROFILE}

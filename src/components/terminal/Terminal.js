@@ -14,8 +14,9 @@ import Button from '../common/Button';
 
 /**
  * Reusable Interactive Terminal Component.
- * Powered by the local Git Command Interpreter (Milestone 10):
- * - Supports git init, status, add, commit, log, config, remote, and shell utilities.
+ * Powered by the local Git Command Interpreter (Milestone 11):
+ * - Supports git init, status, add, commit, log, config, remote,
+ *   branch, switch, checkout, merge, and shell utilities.
  * - Live simulated repository state tracking.
  * - Mobile quick-command tap pills.
  */
@@ -24,7 +25,7 @@ export default function Terminal({ style, title }) {
     {
       id: 'init-1',
       type: 'info',
-      text: 'Git Quest Command Interpreter [Engine v10.0]\nType \'help\' to list available Git & shell commands.',
+      text: 'Git Quest Command Interpreter [Engine v11.0]\nType \'help\' to list available Git & shell commands.',
     },
     {
       id: 'init-2',
@@ -43,7 +44,13 @@ export default function Terminal({ style, title }) {
     'git status',
     'git add .',
     'git commit -m "Initial commit"',
-    'git log',
+    'git branch',
+    'git branch feature/my-feature',
+    'git switch feature/my-feature',
+    'git switch -c hotfix/bug-fix',
+    'git checkout -b release/v1.0',
+    'git merge feature/my-feature',
+    'git log --oneline',
     'git remote -v',
     'help',
     'clear',
@@ -215,7 +222,7 @@ export default function Terminal({ style, title }) {
         <Text style={styles.inputPrompt}>$ </Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Try 'git init', 'git status', 'git add .', 'help'..."
+          placeholder="Try 'git branch', 'git switch -c feat', 'git merge'..."
           placeholderTextColor={colors.textMuted}
           value={inputValue}
           onChangeText={setInputValue}

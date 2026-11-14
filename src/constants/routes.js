@@ -11,5 +11,6 @@ export const ROUTES = {
   LESSONS: 'Lessons',
   LESSON_DETAILS: 'LessonDetails',
   TERMINAL: 'Terminal',
+  BRANCH_VISUALIZER: 'BranchVisualizer',
   PROFILE: 'Profile',
 };

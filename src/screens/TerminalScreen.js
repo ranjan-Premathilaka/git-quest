@@ -34,7 +34,7 @@ export default function TerminalScreen({ navigation }) {
               onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
             />
             <Badge
-              label="Interpreter Engine v10.0"
+              label="Interpreter Engine v11.0"
               variant="gitMain"
             />
           </View>
@@ -44,7 +44,7 @@ export default function TerminalScreen({ navigation }) {
             <Text style={styles.headerApp}>Git Quest • Command Interpreter</Text>
             <Text style={styles.title}>Git Terminal Sandbox</Text>
             <Text style={styles.subtitle}>
-              Execute real simulated Git operations. Track repository state, stage files, create commits, inspect logs, and manage remotes.
+              Execute simulated Git operations — init, stage, commit, branch, switch, merge, and more.
             </Text>
           </View>
 
@@ -53,7 +53,7 @@ export default function TerminalScreen({ navigation }) {
 
           {/* Supported Commands Reference Card */}
           <View style={styles.hintBox}>
-            <Text style={styles.hintTitle}>Supported Git Commands (Milestone 10):</Text>
+            <Text style={styles.hintTitle}>Supported Git Commands (Milestone 11):</Text>
 
             <View style={styles.commandCategory}>
               <Text style={styles.categoryLabel}>Repository & Staging:</Text>
@@ -67,15 +67,35 @@ export default function TerminalScreen({ navigation }) {
             <View style={styles.commandCategory}>
               <Text style={styles.categoryLabel}>Commits & History:</Text>
               <Text style={styles.categoryText}>
-                • <Text style={styles.codeText}>git commit -m &quot;Your message&quot;</Text> — Record commit snapshot{'\n'}
+                • <Text style={styles.codeText}>git commit -m "Your message"</Text> — Record commit snapshot{'\n'}
                 • <Text style={styles.codeText}>git log</Text> or <Text style={styles.codeText}>git log --oneline</Text> — View history
+              </Text>
+            </View>
+
+            <View style={styles.commandCategory}>
+              <Text style={styles.categoryLabel}>Branches (New in M11):</Text>
+              <Text style={styles.categoryText}>
+                • <Text style={styles.codeText}>git branch</Text> — List branches{'\n'}
+                • <Text style={styles.codeText}>git branch feature/name</Text> — Create branch{'\n'}
+                • <Text style={styles.codeText}>git branch -d feature/name</Text> — Delete branch{'\n'}
+                • <Text style={styles.codeText}>git switch feature/name</Text> — Switch branch{'\n'}
+                • <Text style={styles.codeText}>git switch -c feature/name</Text> — Create & switch{'\n'}
+                • <Text style={styles.codeText}>git checkout -b feature/name</Text> — Create & switch (classic)
+              </Text>
+            </View>
+
+            <View style={styles.commandCategory}>
+              <Text style={styles.categoryLabel}>Merging (New in M11):</Text>
+              <Text style={styles.categoryText}>
+                • <Text style={styles.codeText}>git merge feature/name</Text> — Merge branch into current{'\n'}
+                (fast-forward & three-way merge simulated)
               </Text>
             </View>
 
             <View style={styles.commandCategory}>
               <Text style={styles.categoryLabel}>Config & Remotes:</Text>
               <Text style={styles.categoryText}>
-                • <Text style={styles.codeText}>git config --global user.name &quot;Name&quot;</Text>{'\n'}
+                • <Text style={styles.codeText}>git config --global user.name "Name"</Text>{'\n'}
                 • <Text style={styles.codeText}>git config --list</Text> — List settings{'\n'}
                 • <Text style={styles.codeText}>git remote add origin https://github.com/repo.git</Text>{'\n'}
                 • <Text style={styles.codeText}>git remote -v</Text> — List remotes
@@ -86,8 +106,15 @@ export default function TerminalScreen({ navigation }) {
           {/* Bottom Navigation Links */}
           <View style={styles.bottomNav}>
             <Button
-              title="Explore Learning Modules →"
+              title="🌿 Branch Visualizer →"
               variant="primary"
+              size="md"
+              style={styles.bottomBtn}
+              onPress={() => navigation.navigate(ROUTES.BRANCH_VISUALIZER)}
+            />
+            <Button
+              title="Explore Learning Modules →"
+              variant="secondary"
               size="md"
               style={styles.bottomBtn}
               onPress={() => navigation.navigate(ROUTES.LESSONS)}

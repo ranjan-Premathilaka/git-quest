@@ -267,6 +267,13 @@ export default function DashboardScreen({ navigation }) {
             onPress={() => navigation.navigate(ROUTES.TERMINAL)}
           />
           <Button
+            title="🌿 Branch Visualizer"
+            variant="secondary"
+            size="md"
+            style={styles.quickLinkBtn}
+            onPress={() => navigation.navigate(ROUTES.BRANCH_VISUALIZER)}
+          />
+          <Button
             title="Browse All Git Lessons"
             variant="secondary"
             size="md"

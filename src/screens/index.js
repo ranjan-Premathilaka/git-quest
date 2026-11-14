@@ -4,4 +4,5 @@ export { default as DashboardScreen } from './DashboardScreen';
 export { default as LessonsScreen } from './LessonsScreen';
 export { default as LessonDetailsScreen } from './LessonDetailsScreen';
 export { default as TerminalScreen } from './TerminalScreen';
+export { default as BranchVisualizerScreen } from './BranchVisualizerScreen';
 export { default as ProfileScreen } from './ProfileScreen';
