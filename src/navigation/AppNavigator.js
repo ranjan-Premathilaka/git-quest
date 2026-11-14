@@ -4,6 +4,7 @@ import { ROUTES } from '../constants/routes';
 import { colors } from '../constants/theme';
 import {
   WelcomeScreen,
+  OnboardingScreen,
   DashboardScreen,
   LessonsScreen,
   ProfileScreen,
@@ -28,6 +29,10 @@ export default function AppNavigator() {
       <Stack.Screen
         name={ROUTES.WELCOME}
         component={WelcomeScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.ONBOARDING}
+        component={OnboardingScreen}
       />
       <Stack.Screen
         name={ROUTES.DASHBOARD}

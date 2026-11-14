@@ -6,6 +6,7 @@
  */
 export const ROUTES = {
   WELCOME: 'Welcome',
+  ONBOARDING: 'Onboarding',
   DASHBOARD: 'Dashboard',
   LESSONS: 'Lessons',
   PROFILE: 'Profile',
