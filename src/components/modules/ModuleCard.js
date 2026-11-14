@@ -137,37 +137,47 @@ export default function ModuleCard({ module, onSelect, onSelectLesson }) {
         </Text>
       </TouchableOpacity>
 
-      {expanded && (
-        <View style={styles.lessonsList}>
-          {module.lessons.map((lesson, idx) => (
-            <TouchableOpacity
-              key={lesson.id}
-              activeOpacity={0.7}
-              style={styles.lessonItem}
-              disabled={isLocked}
-              onPress={() => onSelectLesson && onSelectLesson(lesson.id, module)}
-            >
-              <Text
-                style={[
-                  styles.lessonStatusIcon,
-                  lesson.completed ? styles.lessonDone : styles.lessonPending,
-                ]}
-              >
-                {lesson.completed ? '✓' : '○'}
-              </Text>
-              <Text
-                style={[
-                  styles.lessonTitle,
-                  lesson.completed && styles.lessonCompletedText,
-                ]}
-              >
-                {idx + 1}. {lesson.title}
-              </Text>
-              {!isLocked && <Text style={styles.lessonArrow}>→</Text>}
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+
+{expanded && (
+  <View style={styles.lessonsList}>
+    {module.lessons.map((lesson, idx) => (
+      <TouchableOpacity
+        key={lesson.id}
+        activeOpacity={0.6}
+        style={styles.lessonItem}
+        onPress={() => {
+          if (!isLocked && onSelectLesson) {
+            onSelectLesson(lesson.id, module);
+          }
+        }}
+        disabled={isLocked || !onSelectLesson}
+      >
+        <Text
+          style={[
+            styles.lessonStatusIcon,
+            lesson.completed ? styles.lessonDone : styles.lessonPending,
+          ]}
+        >
+          {lesson.completed ? '✓' : '○'}
+        </Text>
+
+        <Text
+          style={[
+            styles.lessonTitle,
+            lesson.completed && styles.lessonCompletedText,
+          ]}
+        >
+          {idx + 1}. {lesson.title}
+        </Text>
+
+        {!isLocked && (
+          <Text style={styles.lessonArrow}>→</Text>
+        )}
+      </TouchableOpacity>
+    ))}
+  </View>
+)}
+
 
       {/* Action Button */}
       <View style={styles.actionContainer}>
