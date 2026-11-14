@@ -10,5 +10,6 @@ export const ROUTES = {
   DASHBOARD: 'Dashboard',
   LESSONS: 'Lessons',
   LESSON_DETAILS: 'LessonDetails',
+  TERMINAL: 'Terminal',
   PROFILE: 'Profile',
 };

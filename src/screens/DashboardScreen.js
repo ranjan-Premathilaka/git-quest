@@ -260,6 +260,13 @@ export default function DashboardScreen({ navigation }) {
         {/* Bottom Navigation Quick Links */}
         <View style={styles.bottomQuickLinks}>
           <Button
+            title="Launch Terminal Simulator 💻"
+            variant="primary"
+            size="md"
+            style={styles.quickLinkBtn}
+            onPress={() => navigation.navigate(ROUTES.TERMINAL)}
+          />
+          <Button
             title="Browse All Git Lessons"
             variant="secondary"
             size="md"
