@@ -1,5 +1,1 @@
-/**
- * Navigation configuration placeholder.
- * Navigation will be introduced in future milestones.
- */
-export default {};
+export { default as AppNavigator } from './AppNavigator';

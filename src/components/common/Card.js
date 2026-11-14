@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors, borderRadius, spacing } from '../constants/theme';
+import { colors, borderRadius, spacing } from '../../constants/theme';
 
 /**
  * Reusable modern rounded card component with a developer-themed border and surface.

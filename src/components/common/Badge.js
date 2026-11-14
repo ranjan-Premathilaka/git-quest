@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, borderRadius, spacing } from '../constants/theme';
+import { colors, borderRadius, spacing } from '../../constants/theme';
 
 /**
  * Reusable developer badge component for tags and status labels.
