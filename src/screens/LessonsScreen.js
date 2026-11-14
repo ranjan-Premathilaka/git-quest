@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,102 +7,218 @@ import {
   Platform,
   StatusBar as NativeStatusBar,
   ScrollView,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { colors, spacing, borderRadius, typography } from '../constants/theme';
 import { ROUTES } from '../constants/routes';
-import { Card, Badge, Button } from '../components';
+import { modulesData } from '../data';
+import { Badge, Button, ModuleCard, Card } from '../components';
 
 export default function LessonsScreen({ navigation }) {
-  const lessonTracks = [
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'in-progress' | 'available' | 'completed' | 'locked'
+
+  // Calculate overall metrics
+  const totalLessonsCount = modulesData.reduce((acc, m) => acc + m.totalLessons, 0);
+  const completedLessonsCount = modulesData.reduce((acc, m) => acc + m.completedLessons, 0);
+  const overallProgressPercent = Math.round((completedLessonsCount / totalLessonsCount) * 100);
+
+  const filterTabs = [
+    { key: 'all', label: `All (${modulesData.length})` },
     {
-      id: '1',
-      title: 'Git Fundamentals',
-      desc: 'init, status, add, commit',
-      tag: 'Beginner',
-      variant: 'gitRelease',
+      key: 'in-progress',
+      label: `In Progress (${modulesData.filter((m) => m.status === 'in-progress').length})`,
     },
     {
-      id: '2',
-      title: 'Branching & Merging',
-      desc: 'branch, switch, merge, rebase',
-      tag: 'Intermediate',
-      variant: 'gitDevelop',
+      key: 'available',
+      label: `Available (${modulesData.filter((m) => m.status === 'available').length})`,
     },
     {
-      id: '3',
-      title: 'Remotes & Collaboration',
-      desc: 'fetch, pull, push, remotes',
-      tag: 'Advanced',
-      variant: 'gitMain',
+      key: 'completed',
+      label: `Completed (${modulesData.filter((m) => m.status === 'completed').length})`,
+    },
+    {
+      key: 'locked',
+      label: `Locked (${modulesData.filter((m) => m.status === 'locked').length})`,
     },
   ];
 
+  // Filter and search logic
+  const filteredModules = useMemo(() => {
+    return modulesData.filter((m) => {
+      const matchesFilter =
+        activeFilter === 'all' ? true : m.status === activeFilter;
+
+      const q = searchQuery.trim().toLowerCase();
+      const matchesSearch =
+        q === ''
+          ? true
+          : m.title.toLowerCase().includes(q) ||
+            m.description.toLowerCase().includes(q) ||
+            m.lessons.some((l) => l.title.toLowerCase().includes(q));
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [searchQuery, activeFilter]);
+
+  const handleSelectModule = (module) => {
+    // In Milestone 07, actual lesson execution is not yet implemented.
+    // We can show feedback or navigate back to dashboard when needed.
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Top Bar */}
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Top Navigation Row */}
         <View style={styles.topRow}>
           <Button
-            title="← Back"
+            title="← Dashboard"
             variant="secondary"
             size="sm"
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
           />
           <Badge
-            label="topic: git-basics"
-            variant="gitFeature"
+            label={`${completedLessonsCount}/${totalLessonsCount} Lessons Done`}
+            variant="gitRelease"
           />
         </View>
 
-        {/* Header Section */}
+        {/* Screen Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Git Lessons</Text>
-          <Text style={styles.subtitle}>Interactive Learning Tracks</Text>
+          <Text style={styles.headerApp}>Git Quest • Learning Catalog</Text>
+          <Text style={styles.title}>Git Learning Modules</Text>
+          <Text style={styles.subtitle}>
+            Explore structured topics from command foundations to collaborative workflows.
+          </Text>
         </View>
 
-        {/* Tracks Placeholder Card */}
-        <Card style={styles.card}>
-          <View style={styles.terminalHeader}>
-            <View style={[styles.terminalDot, { backgroundColor: colors.error }]} />
-            <View style={[styles.terminalDot, { backgroundColor: colors.warning }]} />
-            <View style={[styles.terminalDot, { backgroundColor: colors.success }]} />
-            <Text style={styles.terminalTitle}>lessons://catalog.json</Text>
-          </View>
-
-          <Text style={styles.cardIntro}>
-            Lesson modules will be populated in upcoming milestones. Below is a preview of the planned learning tracks:
-          </Text>
-
-          {lessonTracks.map((track) => (
-            <View key={track.id} style={styles.trackItem}>
-              <View style={styles.trackContent}>
-                <Text style={styles.trackTitle}>{track.title}</Text>
-                <Text style={styles.trackDesc}>{track.desc}</Text>
-              </View>
-              <Badge
-                label={track.tag}
-                variant={track.variant}
-                size="sm"
-                style={styles.trackBadge}
-              />
+        {/* Overall Progress Summary Card */}
+        <Card style={styles.summaryCard} variant="elevated">
+          <View style={styles.summaryTop}>
+            <View>
+              <Text style={styles.summaryLabel}>TRACK PROGRESS</Text>
+              <Text style={styles.summaryTitle}>
+                {completedLessonsCount} of {totalLessonsCount} Lessons Completed
+              </Text>
             </View>
-          ))}
+            <Text style={styles.summaryPercent}>{overallProgressPercent}%</Text>
+          </View>
+          <View style={styles.summaryBarBg}>
+            <View
+              style={[
+                styles.summaryBarFill,
+                { width: `${overallProgressPercent}%` },
+              ]}
+            />
+          </View>
+          <View style={styles.summaryMetaRow}>
+            <Text style={styles.summaryMeta}>
+              1 Completed • 1 In Progress • 1 Available • 2 Locked
+            </Text>
+          </View>
         </Card>
 
-        {/* Navigation Actions */}
-        <View style={styles.actionsSection}>
+        {/* Search Field */}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search topics, commands (init, commit, remote, branch)..."
+            placeholderTextColor={colors.textMuted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity
+              style={styles.clearSearchBtn}
+              onPress={() => setSearchQuery('')}
+            >
+              <Text style={styles.clearSearchText}>✕</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Filter Category Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterTabsContainer}
+        >
+          {filterTabs.map((tab) => {
+            const isActive = activeFilter === tab.key;
+            return (
+              <TouchableOpacity
+                key={tab.key}
+                activeOpacity={0.7}
+                style={[
+                  styles.filterTab,
+                  isActive && styles.filterTabActive,
+                ]}
+                onPress={() => setActiveFilter(tab.key)}
+              >
+                <Text
+                  style={[
+                    styles.filterTabText,
+                    isActive && styles.filterTabTextActive,
+                  ]}
+                >
+                  {tab.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
+        {/* Modules List */}
+        <View style={styles.modulesSection}>
+          {filteredModules.length > 0 ? (
+            filteredModules.map((module) => (
+              <ModuleCard
+                key={module.id}
+                module={module}
+                onSelect={handleSelectModule}
+              />
+            ))
+          ) : (
+            <Card style={styles.emptyCard} variant="terminal">
+              <Text style={styles.emptyIcon}>🔍</Text>
+              <Text style={styles.emptyTitle}>No Matching Modules</Text>
+              <Text style={styles.emptyDesc}>
+                No learning modules match &quot;{searchQuery}&quot; under the &quot;{activeFilter}&quot; filter.
+              </Text>
+              <Button
+                title="Reset Filters"
+                variant="outline"
+                size="sm"
+                style={styles.resetBtn}
+                onPress={() => {
+                  setSearchQuery('');
+                  setActiveFilter('all');
+                }}
+              />
+            </Card>
+          )}
+        </View>
+
+        {/* Bottom Navigation Links */}
+        <View style={styles.bottomNavSection}>
           <Button
-            title="Go to Dashboard →"
-            variant="primary"
+            title="← Back to Dashboard"
+            variant="secondary"
             size="md"
-            style={styles.btn}
+            style={styles.navBtn}
             onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
           />
           <Button
-            title="View Profile →"
-            variant="accent"
-            size="md"
-            style={styles.btn}
+            title="View Developer Profile →"
+            variant="outline"
+            size="sm"
+            style={styles.navBtn}
             onPress={() => navigation.navigate(ROUTES.PROFILE)}
           />
         </View>
@@ -131,71 +247,154 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: spacing.lg,
   },
+  headerApp: {
+    ...typography.caption,
+    color: colors.accent,
+    letterSpacing: 1.5,
+    marginBottom: spacing.xxs,
+  },
   title: {
     ...typography.h2,
-    fontSize: typography.sizes.display - 4,
+    fontSize: typography.sizes.display - 6,
+    color: colors.textPrimary,
+    lineHeight: 36,
   },
   subtitle: {
-    ...typography.subtitle,
+    ...typography.body,
+    color: colors.textSecondary,
     marginTop: spacing.xs,
   },
-  card: {
-    marginBottom: spacing.xl,
+  summaryCard: {
+    marginBottom: spacing.lg,
+    padding: spacing.md + 2,
+    borderColor: colors.border,
   },
-  terminalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    paddingBottom: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  terminalDot: {
-    width: 8,
-    height: 8,
-    borderRadius: borderRadius.xs,
-    marginRight: spacing.xs + 2,
-  },
-  terminalTitle: {
-    marginLeft: spacing.xs,
-    fontSize: typography.sizes.xs,
-    color: colors.textMuted,
-    fontFamily: typography.fontFamily.code,
-  },
-  cardIntro: {
-    ...typography.body,
-    marginBottom: spacing.md,
-    lineHeight: 20,
-  },
-  trackItem: {
+  summaryTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    alignItems: 'flex-start',
+    marginBottom: spacing.sm,
   },
-  trackContent: {
-    flex: 1,
-    marginRight: spacing.sm,
+  summaryLabel: {
+    ...typography.caption,
+    color: colors.primary,
   },
-  trackTitle: {
+  summaryTitle: {
     ...typography.h3,
     fontSize: typography.sizes.md,
+    marginTop: 2,
   },
-  trackDesc: {
-    ...typography.code,
-    fontSize: typography.sizes.xs + 1,
+  summaryPercent: {
+    fontFamily: typography.fontFamily.code,
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
+    color: colors.primaryLight,
+  },
+  summaryBarBg: {
+    height: 6,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.terminalBackground,
+    overflow: 'hidden',
+    marginVertical: spacing.xs,
+  },
+  summaryBarFill: {
+    height: '100%',
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary,
+  },
+  summaryMetaRow: {
+    marginTop: spacing.xs,
+  },
+  summaryMeta: {
+    ...typography.bodySmall,
+    fontSize: typography.sizes.xs - 1,
     color: colors.textMuted,
-    marginTop: spacing.xxs,
   },
-  trackBadge: {
-    paddingHorizontal: spacing.sm + 2,
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.md,
   },
-  actionsSection: {
-    gap: spacing.md,
+  searchInput: {
+    flex: 1,
+    height: 44,
+    color: colors.textPrimary,
+    fontSize: typography.sizes.sm,
+    fontFamily: typography.fontFamily.code,
   },
-  btn: {
+  clearSearchBtn: {
+    padding: spacing.xs,
+  },
+  clearSearchText: {
+    color: colors.textMuted,
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.bold,
+  },
+  filterTabsContainer: {
+    flexDirection: 'row',
+    gap: spacing.xs + 2,
+    marginBottom: spacing.lg,
+    paddingRight: spacing.md,
+  },
+  filterTab: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surfaceLight,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  filterTabActive: {
+    backgroundColor: colors.badgeBackground,
+    borderColor: colors.primary,
+  },
+  filterTabText: {
+    ...typography.caption,
+    fontSize: typography.sizes.xs - 1,
+    color: colors.textSecondary,
+  },
+  filterTabTextActive: {
+    color: colors.primaryLight,
+    fontWeight: typography.weights.bold,
+  },
+  modulesSection: {
+    marginBottom: spacing.lg,
+  },
+  emptyCard: {
+    alignItems: 'center',
+    padding: spacing.xl,
+    marginVertical: spacing.md,
+  },
+  emptyIcon: {
+    fontSize: 32,
+    marginBottom: spacing.sm,
+  },
+  emptyTitle: {
+    ...typography.h3,
+    fontSize: typography.sizes.md,
     marginBottom: spacing.xs,
+  },
+  emptyDesc: {
+    ...typography.body,
+    fontSize: typography.sizes.xs,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  resetBtn: {
+    marginTop: spacing.xs,
+  },
+  bottomNavSection: {
+    gap: spacing.sm,
+    alignItems: 'center',
+    marginTop: spacing.md,
+  },
+  navBtn: {
+    width: '100%',
   },
 });
