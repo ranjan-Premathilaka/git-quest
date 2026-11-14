@@ -8,7 +8,7 @@ import {
   StatusBar as NativeStatusBar,
   ScrollView,
 } from 'react-native';
-import { colors, spacing, borderRadius } from '../constants/theme';
+import { colors, spacing, borderRadius, typography } from '../constants/theme';
 import { ROUTES } from '../constants/routes';
 import { Card, Badge, Button } from '../components';
 
@@ -26,7 +26,7 @@ export default function ProfileScreen({ navigation }) {
           />
           <Badge
             label="user: quest-dev"
-            color={colors.primary}
+            variant="gitMain"
           />
         </View>
 
@@ -39,9 +39,9 @@ export default function ProfileScreen({ navigation }) {
         {/* Profile Card */}
         <Card style={styles.card}>
           <View style={styles.terminalHeader}>
-            <View style={[styles.terminalDot, { backgroundColor: '#EF4444' }]} />
-            <View style={[styles.terminalDot, { backgroundColor: '#F59E0B' }]} />
-            <View style={[styles.terminalDot, { backgroundColor: '#10B981' }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.error }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.warning }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.success }]} />
             <Text style={styles.terminalTitle}>git-config://user.profile</Text>
           </View>
 
@@ -123,15 +123,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.textPrimary,
-    letterSpacing: -0.5,
+    ...typography.h2,
+    fontSize: typography.sizes.display - 4,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.accent,
+    ...typography.subtitle,
     marginTop: spacing.xs,
   },
   card: {
@@ -148,14 +144,14 @@ const styles = StyleSheet.create({
   terminalDot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+    borderRadius: borderRadius.xs,
+    marginRight: spacing.xs + 2,
   },
   terminalTitle: {
     marginLeft: spacing.xs,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
     color: colors.textMuted,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontFamily: typography.fontFamily.code,
   },
   userRow: {
     flexDirection: 'row',
@@ -174,24 +170,23 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   avatarText: {
-    fontSize: 18,
-    fontWeight: '800',
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.extrabold,
     color: colors.primary,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontFamily: typography.fontFamily.code,
   },
   userInfo: {
     flex: 1,
   },
   userName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textPrimary,
+    ...typography.h3,
+    fontSize: typography.sizes.md + 1,
   },
   userEmail: {
-    fontSize: 13,
+    ...typography.code,
+    fontSize: typography.sizes.sm,
     color: colors.textMuted,
-    marginTop: 2,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    marginTop: spacing.xxs,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -205,17 +200,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statVal: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
     color: colors.primary,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontFamily: typography.fontFamily.code,
   },
   statLbl: {
-    fontSize: 11,
-    color: colors.textMuted,
-    marginTop: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    ...typography.caption,
+    marginTop: spacing.xxs,
   },
   actionsSection: {
     gap: spacing.md,

@@ -1,13 +1,43 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors, borderRadius, spacing } from '../../constants/theme';
+import { colors, borderRadius, spacing, shadows } from '../../constants/theme';
 
 /**
- * Reusable modern rounded card component with a developer-themed border and surface.
+ * Reusable developer-themed Card component with support for variants and elevations.
  */
-export default function Card({ children, style, ...props }) {
+export default function Card({
+  children,
+  variant = 'default',
+  elevation = 'md',
+  bordered = true,
+  style,
+  ...props
+}) {
+  const getBackgroundColor = () => {
+    switch (variant) {
+      case 'elevated':
+        return colors.surfaceElevated;
+      case 'terminal':
+        return colors.terminalBackground;
+      case 'subtle':
+        return colors.surfaceLight;
+      case 'default':
+      default:
+        return colors.surface;
+    }
+  };
+
   return (
-    <View style={[styles.card, style]} {...props}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: getBackgroundColor() },
+        bordered && styles.bordered,
+        shadows[elevation] || shadows.md,
+        style,
+      ]}
+      {...props}
+    >
       {children}
     </View>
   );
@@ -15,15 +45,11 @@ export default function Card({ children, style, ...props }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderWidth: 1,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+  },
+  bordered: {
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });

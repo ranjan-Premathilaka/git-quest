@@ -8,15 +8,33 @@ import {
   StatusBar as NativeStatusBar,
   ScrollView,
 } from 'react-native';
-import { colors, spacing, borderRadius } from '../constants/theme';
+import { colors, spacing, borderRadius, typography } from '../constants/theme';
 import { ROUTES } from '../constants/routes';
 import { Card, Badge, Button } from '../components';
 
 export default function LessonsScreen({ navigation }) {
   const lessonTracks = [
-    { id: '1', title: 'Git Fundamentals', desc: 'init, status, add, commit', tag: 'Beginner' },
-    { id: '2', title: 'Branching & Merging', desc: 'branch, switch, merge, rebase', tag: 'Intermediate' },
-    { id: '3', title: 'Remotes & Collaboration', desc: 'fetch, pull, push, remotes', tag: 'Advanced' },
+    {
+      id: '1',
+      title: 'Git Fundamentals',
+      desc: 'init, status, add, commit',
+      tag: 'Beginner',
+      variant: 'gitRelease',
+    },
+    {
+      id: '2',
+      title: 'Branching & Merging',
+      desc: 'branch, switch, merge, rebase',
+      tag: 'Intermediate',
+      variant: 'gitDevelop',
+    },
+    {
+      id: '3',
+      title: 'Remotes & Collaboration',
+      desc: 'fetch, pull, push, remotes',
+      tag: 'Advanced',
+      variant: 'gitMain',
+    },
   ];
 
   return (
@@ -32,7 +50,7 @@ export default function LessonsScreen({ navigation }) {
           />
           <Badge
             label="topic: git-basics"
-            color={colors.accent}
+            variant="gitFeature"
           />
         </View>
 
@@ -45,9 +63,9 @@ export default function LessonsScreen({ navigation }) {
         {/* Tracks Placeholder Card */}
         <Card style={styles.card}>
           <View style={styles.terminalHeader}>
-            <View style={[styles.terminalDot, { backgroundColor: '#EF4444' }]} />
-            <View style={[styles.terminalDot, { backgroundColor: '#F59E0B' }]} />
-            <View style={[styles.terminalDot, { backgroundColor: '#10B981' }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.error }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.warning }]} />
+            <View style={[styles.terminalDot, { backgroundColor: colors.success }]} />
             <Text style={styles.terminalTitle}>lessons://catalog.json</Text>
           </View>
 
@@ -63,7 +81,8 @@ export default function LessonsScreen({ navigation }) {
               </View>
               <Badge
                 label={track.tag}
-                color={colors.git.release}
+                variant={track.variant}
+                size="sm"
                 style={styles.trackBadge}
               />
             </View>
@@ -113,15 +132,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.textPrimary,
-    letterSpacing: -0.5,
+    ...typography.h2,
+    fontSize: typography.sizes.display - 4,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.accent,
+    ...typography.subtitle,
     marginTop: spacing.xs,
   },
   card: {
@@ -138,18 +153,17 @@ const styles = StyleSheet.create({
   terminalDot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+    borderRadius: borderRadius.xs,
+    marginRight: spacing.xs + 2,
   },
   terminalTitle: {
     marginLeft: spacing.xs,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
     color: colors.textMuted,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    fontFamily: typography.fontFamily.code,
   },
   cardIntro: {
-    fontSize: 14,
-    color: colors.textSecondary,
+    ...typography.body,
     marginBottom: spacing.md,
     lineHeight: 20,
   },
@@ -166,15 +180,14 @@ const styles = StyleSheet.create({
     marginRight: spacing.sm,
   },
   trackTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.textPrimary,
+    ...typography.h3,
+    fontSize: typography.sizes.md,
   },
   trackDesc: {
-    fontSize: 12,
+    ...typography.code,
+    fontSize: typography.sizes.xs + 1,
     color: colors.textMuted,
-    marginTop: 2,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    marginTop: spacing.xxs,
   },
   trackBadge: {
     paddingHorizontal: spacing.sm + 2,

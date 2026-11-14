@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { colors, borderRadius, spacing } from '../../constants/theme';
+import { colors, borderRadius, spacing, shadows, typography } from '../../constants/theme';
 
 /**
- * Reusable developer-styled button component.
- * Supports primary (purple), secondary (surface), outline, and accent (blue) variants.
+ * Reusable developer-styled button component integrated with centralized design tokens.
  */
 export default function Button({
   title,
@@ -25,6 +24,8 @@ export default function Button({
         return styles.outlineContainer;
       case 'accent':
         return styles.accentContainer;
+      case 'danger':
+        return styles.dangerContainer;
       case 'primary':
       default:
         return styles.primaryContainer;
@@ -39,6 +40,8 @@ export default function Button({
         return styles.outlineText;
       case 'accent':
         return styles.accentText;
+      case 'danger':
+        return styles.dangerText;
       case 'primary':
       default:
         return styles.primaryText;
@@ -57,6 +60,13 @@ export default function Button({
     }
   };
 
+  const getShadowStyle = () => {
+    if (disabled || variant === 'outline' || variant === 'secondary') {
+      return shadows.none;
+    }
+    return shadows.sm;
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={0.75}
@@ -66,6 +76,7 @@ export default function Button({
         styles.baseContainer,
         getContainerStyle(),
         getSizeStyle(),
+        getShadowStyle(),
         disabled && styles.disabledContainer,
         style,
       ]}
@@ -120,12 +131,15 @@ const styles = StyleSheet.create({
   accentContainer: {
     backgroundColor: colors.accent,
   },
+  dangerContainer: {
+    backgroundColor: colors.error,
+  },
   disabledContainer: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   baseText: {
-    fontWeight: '600',
-    fontSize: 15,
+    fontWeight: typography.weights.semibold,
+    fontSize: typography.sizes.md,
     letterSpacing: 0.3,
   },
   primaryText: {
@@ -138,6 +152,9 @@ const styles = StyleSheet.create({
     color: colors.accent,
   },
   accentText: {
+    color: '#FFFFFF',
+  },
+  dangerText: {
     color: '#FFFFFF',
   },
   disabledText: {
