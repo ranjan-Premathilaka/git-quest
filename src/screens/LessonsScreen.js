@@ -62,9 +62,24 @@ export default function LessonsScreen({ navigation }) {
     });
   }, [searchQuery, activeFilter]);
 
+  // Navigate to specific lesson details
+  const handleSelectLesson = (lessonId, module) => {
+    navigation.navigate(ROUTES.LESSON_DETAILS, {
+      lessonId,
+      moduleId: module?.id,
+    });
+  };
+
+  // Open first available lesson when selecting the module card action button
   const handleSelectModule = (module) => {
-    // In Milestone 07, actual lesson execution is not yet implemented.
-    // We can show feedback or navigate back to dashboard when needed.
+    if (module.lessons && module.lessons.length > 0) {
+      const targetLesson =
+        module.lessons.find((l) => !l.completed) || module.lessons[0];
+      navigation.navigate(ROUTES.LESSON_DETAILS, {
+        lessonId: targetLesson.id,
+        moduleId: module.id,
+      });
+    }
   };
 
   return (
@@ -92,7 +107,7 @@ export default function LessonsScreen({ navigation }) {
           <Text style={styles.headerApp}>Git Quest • Learning Catalog</Text>
           <Text style={styles.title}>Git Learning Modules</Text>
           <Text style={styles.subtitle}>
-            Explore structured topics from command foundations to collaborative workflows.
+            Explore structured topics from command foundations to collaborative workflows. Tap any lesson to start learning.
           </Text>
         </View>
 
@@ -182,6 +197,7 @@ export default function LessonsScreen({ navigation }) {
                 key={module.id}
                 module={module}
                 onSelect={handleSelectModule}
+                onSelectLesson={handleSelectLesson}
               />
             ))
           ) : (

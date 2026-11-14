@@ -9,5 +9,6 @@ export const ROUTES = {
   ONBOARDING: 'Onboarding',
   DASHBOARD: 'Dashboard',
   LESSONS: 'Lessons',
+  LESSON_DETAILS: 'LessonDetails',
   PROFILE: 'Profile',
 };

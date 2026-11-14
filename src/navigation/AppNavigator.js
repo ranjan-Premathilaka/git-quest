@@ -7,6 +7,7 @@ import {
   OnboardingScreen,
   DashboardScreen,
   LessonsScreen,
+  LessonDetailsScreen,
   ProfileScreen,
 } from '../screens';
 
@@ -41,6 +42,10 @@ export default function AppNavigator() {
       <Stack.Screen
         name={ROUTES.LESSONS}
         component={LessonsScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.LESSON_DETAILS}
+        component={LessonDetailsScreen}
       />
       <Stack.Screen
         name={ROUTES.PROFILE}

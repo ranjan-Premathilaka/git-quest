@@ -14,7 +14,7 @@ import Button from '../common/Button';
  * Reusable Card component representing a single Git Learning Module.
  * Displays progress, lesson subtopics, status indicators, and call-to-actions.
  */
-export default function ModuleCard({ module, onSelect }) {
+export default function ModuleCard({ module, onSelect, onSelectLesson }) {
   const [expanded, setExpanded] = useState(false);
 
   const isCompleted = module.status === 'completed';
@@ -140,7 +140,13 @@ export default function ModuleCard({ module, onSelect }) {
       {expanded && (
         <View style={styles.lessonsList}>
           {module.lessons.map((lesson, idx) => (
-            <View key={lesson.id} style={styles.lessonItem}>
+            <TouchableOpacity
+              key={lesson.id}
+              activeOpacity={0.7}
+              style={styles.lessonItem}
+              disabled={isLocked}
+              onPress={() => onSelectLesson && onSelectLesson(lesson.id, module)}
+            >
               <Text
                 style={[
                   styles.lessonStatusIcon,
@@ -157,7 +163,8 @@ export default function ModuleCard({ module, onSelect }) {
               >
                 {idx + 1}. {lesson.title}
               </Text>
-            </View>
+              {!isLocked && <Text style={styles.lessonArrow}>→</Text>}
+            </TouchableOpacity>
           ))}
         </View>
       )}
@@ -294,7 +301,8 @@ const styles = StyleSheet.create({
   lessonItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 2,
+    paddingVertical: 4,
+    paddingHorizontal: 2,
   },
   lessonStatusIcon: {
     fontFamily: typography.fontFamily.code,
@@ -318,7 +326,11 @@ const styles = StyleSheet.create({
   },
   lessonCompletedText: {
     color: colors.textMuted,
-    textDecorationLine: 'line-through',
+  },
+  lessonArrow: {
+    color: colors.accent,
+    fontSize: typography.sizes.sm,
+    marginLeft: spacing.xs,
   },
   actionContainer: {
     marginTop: spacing.xs,
