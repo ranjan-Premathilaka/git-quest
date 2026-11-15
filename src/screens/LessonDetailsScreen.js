@@ -15,9 +15,9 @@ import { Card, Badge, Button } from '../components';
 import { getProgress, markLessonCompleted } from '../services/progressService';
 
 export default function LessonDetailsScreen({ route, navigation }) {
-  // Read lessonId passed through navigation params, fallback to sample 'l-01'
-  const lessonId = route?.params?.lessonId || 'l-01';
-  const lesson = lessonsData[lessonId] || lessonsData['l-01'];
+  // A missing ID is an invalid route; never silently show a different lesson.
+  const lessonId = route?.params?.lessonId;
+  const lesson = lessonsData[lessonId] || null;
 
   // Load saved completion state for this lesson.
   const [isCompleted, setIsCompleted] = useState(false);
@@ -35,6 +35,23 @@ export default function LessonDetailsScreen({ route, navigation }) {
       });
     return () => { active = false; };
   }, [lessonId]);
+
+  if (!lesson) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.scrollContent}>
+          <Text style={styles.title}>Lesson Content Unavailable</Text>
+          <Text style={styles.sectionBody}>
+            This lesson has not been added yet. Please return to the lessons list.
+          </Text>
+          <Button
+            title="Back to Lessons"
+            onPress={() => navigation.navigate(ROUTES.LESSONS)}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const progressPercent = Math.round(
     (lesson.lessonIndex / lesson.totalLessonsInModule) * 100

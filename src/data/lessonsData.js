@@ -166,3 +166,33 @@ export const lessonsData = {
     previousLessonId: 'l-02',
   },
 };
+const additionalLessons = [
+  ['l-04','module-02','Working with Repositories',1,3,'Creating a repository','git init','Initialized empty Git repository in /project/.git/','Create a project folder, initialize Git, then inspect the new repository with git status.'],
+  ['l-05','module-02','Working with Repositories',2,3,'git init','git init','Initialized empty Git repository in /project/.git/','git init creates the hidden .git directory that stores configuration, objects and history. It does not add your files to version control yet.'],
+  ['l-06','module-02','Working with Repositories',3,3,'git status','git status','On branch main\nUntracked files:\n  README.md\nnothing added to commit','Use git status whenever you need to understand what is staged, modified or untracked before committing.'],
+  ['l-07','module-03','Tracking Changes',1,3,'git add','git add README.md','Changes to be committed:\n  new file: README.md','The staging area lets you select exactly which changes belong in the next commit. Stage individual files for precise commits.'],
+  ['l-08','module-03','Tracking Changes',2,3,'git commit','git commit -m "Add project readme"','[main a1b2c3d] Add project readme\n 1 file changed','A commit records the staged snapshot with an author, timestamp and message. Keep messages concise and explain the change.'],
+  ['l-09','module-03','Tracking Changes',3,3,'git log','git log --oneline','a1b2c3d Add project readme\n9d8e7f6 Initial commit','Git log displays commit history. The --oneline option gives a compact view useful for quickly scanning project milestones.'],
+  ['l-10','module-04','Remote Repositories',1,4,'git remote','git remote -v','origin  https://github.com/user/project.git (fetch)\norigin  https://github.com/user/project.git (push)','A remote is a named connection to another copy of your repository. The conventional name origin usually identifies your primary hosted repository.'],
+  ['l-11','module-04','Remote Repositories',2,4,'git push','git push -u origin main','Branch main set up to track remote branch main from origin.','Push sends local commits to a remote. The -u option sets an upstream so future pushes can use the shorter git push command.'],
+  ['l-12','module-04','Remote Repositories',3,4,'git pull','git pull origin main','Updating 9d8e7f6..a1b2c3d\nFast-forward','Pull fetches remote changes and integrates them into the current branch. Review your working tree before pulling to avoid conflicts.'],
+  ['l-13','module-04','Remote Repositories',4,4,'git clone','git clone https://github.com/user/project.git','Cloning into project...\nremote: Enumerating objects: 42, done.','Clone creates a local repository from an existing remote, including its files, branches and commit history.'],
+  ['l-14','module-05','Branching Basics',1,4,'Understanding branches','git branch','* main','A branch is a lightweight pointer to a commit. Branches let you develop features independently while keeping the main line stable.'],
+  ['l-15','module-05','Branching Basics',2,4,'git branch','git branch feature/profile','* main\n  feature/profile','Create a branch to isolate related work. Creating a branch does not switch to it; use git switch to move your working context.'],
+  ['l-16','module-05','Branching Basics',3,4,'git switch','git switch -c feature/profile','Switched to a new branch "feature/profile"','git switch changes the current branch. Add -c to create a branch and switch to it in one step.'],
+  ['l-17','module-05','Branching Basics',4,4,'git merge','git merge feature/profile','Updating 9d8e7f6..a1b2c3d\nFast-forward','Merge integrates changes from another branch into the current branch. Check out the destination branch first, then merge the source branch.'],
+];
+
+for (const [id, moduleId, moduleName, lessonIndex, totalLessonsInModule, title, command, output, explanation] of additionalLessons) {
+  lessonsData[id] = {
+    id, moduleId, moduleName, lessonIndex, totalLessonsInModule, title,
+    estimatedTime: '6 min read', xpReward: 50,
+    introduction: explanation,
+    objectives: [`Understand ${title} in the Git workflow.`, `Know when to use ${command.split(' ')[0]} and what it changes.`, 'Interpret the command result and verify repository state.'],
+    sections: [{ heading: title, body: explanation }, { heading: 'How it fits the workflow', body: 'Git operations are local and work offline. Inspect your repository state before and after each operation so you can confirm the result and recover confidently if needed.' }],
+    commandExample: { title: `Using ${title}`, description: `Run this command in the repository to practice ${title.toLowerCase()}.`, command, output },
+    tips: ['Run git status after important operations to confirm the current state.', 'Git stores repository history locally; network access is only needed when synchronizing with a remote.'],
+    previousLessonId: lessonIndex > 1 ? `l-${String(Number(id.slice(2)) - 1).padStart(2, '0')}` : null,
+    nextLessonId: lessonIndex < totalLessonsInModule ? `l-${String(Number(id.slice(2)) + 1).padStart(2, '0')}` : null,
+  };
+}
