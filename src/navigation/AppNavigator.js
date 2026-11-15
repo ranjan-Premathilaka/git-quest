@@ -11,6 +11,7 @@ import {
   TerminalScreen,
   BranchVisualizerScreen,
   ProfileScreen,
+  QuizScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -56,6 +57,10 @@ export default function AppNavigator() {
       <Stack.Screen
         name={ROUTES.BRANCH_VISUALIZER}
         component={BranchVisualizerScreen}
+      />
+      <Stack.Screen
+        name={ROUTES.QUIZ}
+        component={QuizScreen}
       />
       <Stack.Screen
         name={ROUTES.PROFILE}

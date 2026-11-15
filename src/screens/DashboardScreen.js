@@ -225,6 +225,25 @@ export default function DashboardScreen({ navigation }) {
         </Card>
 
         {/* ========================================================
+            GIT KNOWLEDGE QUIZ
+            ======================================================== */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Knowledge Check</Text>
+          <Badge label="10 Questions" variant="gitFeature" size="sm" />
+        </View>
+        <Card style={styles.challengeCard} variant="elevated">
+          <Text style={styles.challengeTitle}>🧠 Git Knowledge Quiz</Text>
+          <Text style={styles.challengeDesc}>Test your Git knowledge and earn XP by answering 10 multiple-choice questions.</Text>
+          <Button
+            title="Start Quiz →"
+            variant="primary"
+            size="md"
+            style={styles.challengeBtn}
+            onPress={() => navigation.navigate(ROUTES.QUIZ)}
+          />
+        </Card>
+
+        {/* ========================================================
             6. QUICK STATISTICS: TOTAL XP, COMPLETED, STREAK
             ======================================================== */}
         <View style={styles.sectionHeader}>

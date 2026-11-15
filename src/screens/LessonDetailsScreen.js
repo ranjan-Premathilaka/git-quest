@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,21 +12,42 @@ import { colors, spacing, borderRadius, typography } from '../constants/theme';
 import { ROUTES } from '../constants/routes';
 import { lessonsData } from '../data';
 import { Card, Badge, Button } from '../components';
+import { getProgress, markLessonCompleted } from '../services/progressService';
 
 export default function LessonDetailsScreen({ route, navigation }) {
   // Read lessonId passed through navigation params, fallback to sample 'l-01'
   const lessonId = route?.params?.lessonId || 'l-01';
   const lesson = lessonsData[lessonId] || lessonsData['l-01'];
 
-  // Local state for "Mark as Completed"
+  // Load saved completion state for this lesson.
   const [isCompleted, setIsCompleted] = useState(false);
+  const [completionLoading, setCompletionLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    getProgress()
+      .then((progress) => {
+        if (active) setIsCompleted(progress.completedLessons.includes(lessonId));
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setCompletionLoading(false);
+      });
+    return () => { active = false; };
+  }, [lessonId]);
 
   const progressPercent = Math.round(
     (lesson.lessonIndex / lesson.totalLessonsInModule) * 100
   );
 
-  const handleToggleComplete = () => {
-    setIsCompleted(!isCompleted);
+  const handleToggleComplete = async () => {
+    if (isCompleted || completionLoading) return;
+    try {
+      await markLessonCompleted(lessonId, lesson.xpReward);
+      setIsCompleted(true);
+    } catch (error) {
+      console.warn('Unable to save lesson progress:', error);
+    }
   };
 
   const handleNavigateNext = () => {
@@ -236,8 +257,9 @@ export default function LessonDetailsScreen({ route, navigation }) {
           )}
 
           <Button
-            title={isCompleted ? 'Marked as Completed ↺' : 'Mark as Completed ✓'}
+            title={completionLoading ? 'Loading Progress...' : isCompleted ? 'Lesson Completed ✓' : 'Mark as Completed ✓'}
             variant={isCompleted ? 'secondary' : 'primary'}
+            disabled={completionLoading || isCompleted}
             size="lg"
             style={styles.completionBtn}
             onPress={handleToggleComplete}

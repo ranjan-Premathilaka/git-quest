@@ -6,3 +6,4 @@ export { default as LessonDetailsScreen } from './LessonDetailsScreen';
 export { default as TerminalScreen } from './TerminalScreen';
 export { default as BranchVisualizerScreen } from './BranchVisualizerScreen';
 export { default as ProfileScreen } from './ProfileScreen';
+export { default as QuizScreen } from './QuizScreen';
