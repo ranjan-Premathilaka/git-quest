@@ -7,6 +7,7 @@ const createDefaultProgress = () => ({
   completedLessons: [],
   quizResults: {},
   earnedAchievements: [],
+  completedChallenges: [],
   updatedAt: new Date().toISOString(),
 });
 
@@ -18,6 +19,7 @@ const normalizeProgress = (value) => ({
   completedLessons: Array.isArray(value?.completedLessons) ? value.completedLessons : [],
   quizResults: value?.quizResults && typeof value.quizResults === 'object' ? value.quizResults : {},
   earnedAchievements: Array.isArray(value?.earnedAchievements) ? value.earnedAchievements : [],
+  completedChallenges: Array.isArray(value?.completedChallenges) ? value.completedChallenges : [],
   totalXP: Number.isFinite(value?.totalXP) ? Math.max(0, value.totalXP) : 0,
 });
 
@@ -93,4 +95,13 @@ export const resetProgress = async () => {
   cachedProgress = createDefaultProgress();
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProgress));
   return cachedProgress;
+};
+
+export const awardChallenge = async (challengeId, xpReward = 0) => {
+  if (!challengeId) throw new Error('A challenge ID is required.');
+  const current = await getProgress();
+  if (current.completedChallenges.includes(challengeId)) return { progress: current, xpAwarded: 0, alreadyCompleted: true };
+  const xp = Math.max(0, Number(xpReward) || 0);
+  const progress = await persist({ ...current, totalXP: current.totalXP + xp, completedChallenges: [...current.completedChallenges, challengeId] });
+  return { progress, xpAwarded: xp, alreadyCompleted: false };
 };

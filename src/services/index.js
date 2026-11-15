@@ -32,3 +32,12 @@ export {
 } from './gitState';
 
 export { executeGitCommand, tokenizeCommandLine } from './gitInterpreter';
+
+export {
+  getProgress,
+  markLessonCompleted,
+  saveQuizResult,
+  awardAchievement,
+  resetProgress,
+  awardChallenge,
+} from './progressService';

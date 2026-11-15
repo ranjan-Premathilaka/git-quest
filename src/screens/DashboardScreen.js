@@ -244,6 +244,25 @@ export default function DashboardScreen({ navigation }) {
         </Card>
 
         {/* ========================================================
+            PRACTICAL GIT CHALLENGES
+            ======================================================== */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Practical Challenges</Text>
+          <Badge label="5 Tasks • 50 XP" variant="gitFeature" size="sm" />
+        </View>
+        <Card style={styles.challengeCard} variant="elevated">
+          <Text style={styles.challengeTitle}>⌨️ Hands-on Git Practice</Text>
+          <Text style={styles.challengeDesc}>Practise repository setup, staging, commits, branches, and remote connections in the simulated terminal.</Text>
+          <Button
+            title="Start Challenges →"
+            variant="primary"
+            size="md"
+            style={styles.challengeBtn}
+            onPress={() => navigation.navigate(ROUTES.CHALLENGES)}
+          />
+        </Card>
+
+        {/* ========================================================
             6. QUICK STATISTICS: TOTAL XP, COMPLETED, STREAK
             ======================================================== */}
         <View style={styles.sectionHeader}>

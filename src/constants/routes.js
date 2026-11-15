@@ -11,6 +11,7 @@ export const ROUTES = {
   LESSONS: 'Lessons',
   LESSON_DETAILS: 'LessonDetails',
   QUIZ: 'Quiz',
+  CHALLENGES: 'Challenges',
   TERMINAL: 'Terminal',
   BRANCH_VISUALIZER: 'BranchVisualizer',
   PROFILE: 'Profile',
